@@ -9,7 +9,7 @@ Migrate ESList test cases to Oxc.
 ## Usage
 
 ```sh
-trans no-debugger
+node src/index.js no-debugger
 ```
 
 Result:
