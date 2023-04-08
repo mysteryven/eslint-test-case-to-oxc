@@ -1,4 +1,4 @@
-# ESLint-to-Oxc
+# ESLint-test-case-to-oxc
 
 Migrate ESList test cases to Oxc.
 
