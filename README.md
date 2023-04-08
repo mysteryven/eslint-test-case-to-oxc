@@ -1,32 +1,35 @@
-# Nodejs cmd template
+# ESLint-to-Oxc
 
+Migrate ESList test cases to Oxc.
 
-## Use this template
+## Install
 
-```bash
-npm i -g degit 
-degit https://github.com/mysteryven/nodejs-cmd-template projectName
+[wip]
+
+## Usage
+
+```sh
+trans no-debugger
 ```
 
-## Preview
+Result:
 
-```bash
-pnpm i
-pnpm build
-node dist/index.js my name is mysteryzzz
+```sh
+fetching rule no-debugger from eslint repo...
+---- result ----
+#[test]
+fn test() {
+  use crate::tester::Tester;
+  let pass = vec![
+    ("var test = { debugger: 1 }; test.debugger;", None)
+  ];
+  let failed = vec![
+    ("if (foo) debugger", Some(json!()))
+  ];
+  Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
+}
+---- end ----
+copied to clipboard!
 ```
 
-## Test
-
-I only add `vitest`, but not found a straightforward way to test command.
-
-```bash
-// TODO
-pnpm test
-```
-
-## Tools
-
-1. [cac](https://www.npmjs.com/package/cac)
-2. [tsup](https://www.npmjs.com/package/tsup)
-3. [vitest](https://www.npmjs.com/package/vitest)
+[wip]
