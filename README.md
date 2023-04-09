@@ -11,6 +11,12 @@ npm i eslint-test-case-to-oxc
 ## Usage
 
 ```sh
+pnpm trans rule-name
+```
+
+Input:
+
+```sh
 pnpm trans no-debugger
 ```
 
