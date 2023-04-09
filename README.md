@@ -4,12 +4,14 @@ Migrate ESList test cases to Oxc.
 
 ## Install
 
-[wip]
+```sh
+npm i eslint-test-case-to-oxc
+```
 
 ## Usage
 
 ```sh
-node src/index.js no-debugger
+pnpm trans no-debugger
 ```
 
 Result:
@@ -31,5 +33,3 @@ fn test() {
 ---- end ----
 copied to clipboard!
 ```
-
-[wip]

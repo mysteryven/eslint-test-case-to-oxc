@@ -1,10 +1,8 @@
-import {test} from 'vitest';
-import { process } from '../src/utils';
-import { expect } from 'vitest';
+import { test } from 'vitest'
+import { downloadFromESLintRepo, process } from '../src/utils'
+import { expect } from 'vitest'
 
-
-test.runIf(false)("raw string", () => {
-
+test('raw string', () => {
   const file = `
 const rule = require("../../../lib/rules/no-debugger"),
     { RuleTester } = require("../../../lib/rule-tester");
@@ -17,24 +15,25 @@ ruleTester.run("no-debugger", rule, {
 }); 
   `
 
-  expect(process(file, "no-debugger")).toMatchInlineSnapshot(`
+  expect(process(file, 'no-debugger')).toMatchInlineSnapshot(`
     "#[test]
     fn test() {
+       
       use crate::tester::Tester;
       let pass = vec![ 
         (\\"var test = { debugger: 1 }; test.debugger;\\", None)
       ];
-      let failed = vec![
+      let fail = vec![
         (\\"var test = { debugger: 1 }; test.debugger;\\", None)
       ];
-    };
 
-    Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();"
+      Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
+    }
+    "
   `)
 })
 
-test.runIf(false)("object string", () => {
-
+test('object string', () => {
   const file = `
 const ruleTester = new RuleTester();
 ruleTester.run("no-debugger", rule, {
@@ -51,24 +50,25 @@ ruleTester.run("no-debugger", rule, {
 }); 
   `
 
-  expect(process(file, "no-debugger")).toMatchInlineSnapshot(`
+  expect(process(file, 'no-debugger')).toMatchInlineSnapshot(`
     "#[test]
     fn test() {
+       
       use crate::tester::Tester;
       let pass = vec![ 
         (\\"delete x\\", None)
       ];
-      let failed = vec![
+      let fail = vec![
         (\\"var f = function() { return /=foo/; };\\", None)
       ];
-    };
 
-    Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();"
+      Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
+    }
+    "
   `)
 })
 
-test("object string with option", () => {
-
+test('object string with option', () => {
   const file = `
 const ruleTester = new RuleTester();
 ruleTester.run("no-debugger", rule, {
@@ -82,30 +82,55 @@ ruleTester.run("no-debugger", rule, {
 }); 
   `
 
-  expect(process(file, "no-debugger")).toMatchInlineSnapshot(`
+  expect(process(file, 'no-debugger')).toMatchInlineSnapshot(`
     "#[test]
     fn test() {
+      use serde_json::json; 
       use crate::tester::Tester;
       let pass = vec![ 
-        (\\"~[1, 2, 3].indexOf(1)\\", Some(json!([{
-      allow: [\\"~\\"]
-    }]))),
-    (\\"~1<<2 === -8\\", Some(json!([{
-      allow: [\\"~\\", \\"<<\\"]
-    }]))),
-    (\\"a|0\\", Some(json!([{
-      int32Hint: true
-    }]))),
-    (\\"a|0\\", Some(json!([{
-      allow: [\\"|\\"],
-      int32Hint: false
-    }])))
+        (\\"~[1, 2, 3].indexOf(1)\\", Some(json!([{\\"allow\\":[\\"~\\"]}]))),
+    (\\"~1<<2 === -8\\", Some(json!([{\\"allow\\":[\\"~\\",\\"<<\\"]}]))),
+    (\\"a|0\\", Some(json!([{\\"int32Hint\\":true}]))),
+    (\\"a|0\\", Some(json!([{\\"allow\\":[\\"|\\"],\\"int32Hint\\":false}])))
       ];
-      let failed = vec![
+      let fail = vec![
         
       ];
-    };
 
-    Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();"
+      Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
+    }
+    "
+  `)
+})
+
+test('object string with option reference', () => {
+  const file = `
+const ruleTester = new RuleTester();
+const options = {
+  allow: ["~"]
+}
+ruleTester.run("no-debugger", rule, {
+    valid: [
+      { code: "~[1, 2, 3].indexOf(1)", options },
+    ],
+    invalid: []
+}); 
+  `
+
+  expect(process(file, 'no-debugger')).toMatchInlineSnapshot(`
+    "#[test]
+    fn test() {
+      use serde_json::json; 
+      use crate::tester::Tester;
+      let pass = vec![ 
+        (\\"~[1, 2, 3].indexOf(1)\\", Some(json!({\\"allow\\":[\\"~\\"]})))
+      ];
+      let fail = vec![
+        
+      ];
+
+      Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
+    }
+    "
   `)
 })
