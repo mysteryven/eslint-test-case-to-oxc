@@ -11,13 +11,13 @@ npm i eslint-test-case-to-oxc
 ## Usage
 
 ```sh
-pnpm trans rule-name
+npm exec trans rule-name
 ```
 
 Input:
 
 ```sh
-pnpm trans no-debugger
+npm exec trans no-debugger
 ```
 
 Result:
@@ -38,4 +38,13 @@ fn test() {
 }
 ---- end ----
 copied to clipboard!
+```
+
+Not support all cases. for example, `eqeqeq` is not supported because it is only determined at runtime:
+
+```js
+ruleTester.run("eqeqeq", rule, {
+    valid: [ ... ],
+    invalid: [ ... ].map(invalidCase => Object.assign({ output: null }, invalidCase))
+});
 ```
