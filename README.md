@@ -23,19 +23,22 @@ npm exec trans no-debugger
 Result:
 
 ```sh
-fetching rule no-debugger from eslint repo...
+fetching no-debugger rule from ESlint repo...
 ---- result ----
 #[test]
 fn test() {
+
   use crate::tester::Tester;
   let pass = vec![
     ("var test = { debugger: 1 }; test.debugger;", None)
   ];
-  let failed = vec![
-    ("if (foo) debugger", Some(json!()))
+  let fail = vec![
+    ("if (foo) debugger", None)
   ];
+
   Tester::new(NoDebugger::NAME, pass, fail).test_and_snapshot();
 }
+
 ---- end ----
 copied to clipboard!
 ```
